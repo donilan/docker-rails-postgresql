@@ -30,7 +30,7 @@ RUN set -ex \
 
 RUN gem install bundler
 RUN gem install rails -v '~> 5.1.4'
-RUN gem install backup -v '~> 4.4.0'
+RUN gem install backup -v '~> 5.0.0'
 
 WORKDIR $APP
 
