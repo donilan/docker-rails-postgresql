@@ -8,8 +8,8 @@ ENV BUILD_PACKAGES="build-base git bash curl" \
 		APP="/srv/www"
 
 RUN \
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories \
-	&& apk add --no-cache --update --upgrade --virtual .railsdeps $BUILD_PACKAGES $DEV_PACKAGES $RAILS_DEPS \
+  # sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories && \
+	apk add --no-cache --update --upgrade --virtual .railsdeps $BUILD_PACKAGES $DEV_PACKAGES $RAILS_DEPS \
   && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   && echo "Asia/Shanghai" > /etc/timezone \
   && mkdir -p "$APP" \
@@ -24,7 +24,8 @@ RUN \
 	&& mkdir -p $APP \
   && gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ \
   && npm config set registry https://registry.npm.taobao.org \
-  && yarn config set registry https://registry.npm.taobao.org
+  && yarn config set registry https://registry.npm.taobao.org \
+  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories
 
 WORKDIR $APP
 
