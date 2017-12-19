@@ -4,7 +4,7 @@ MAINTAINER Doni Leong <doni.leong@gmail.com>
 # Set up dependencies
 ENV BUILD_PACKAGES="build-base git bash curl" \
 		DEV_PACKAGES="bzip2-dev libgcrypt-dev libxml2-dev libxslt-dev postgresql-dev yaml-dev sqlite-dev zlib-dev libc-dev libffi-dev" \
-		RAILS_DEPS="ca-certificates nodejs tzdata nodejs yarn" \
+		RAILS_DEPS="ca-certificates nodejs tzdata yarn" \
 		APP="/srv/www"
 
 RUN \
