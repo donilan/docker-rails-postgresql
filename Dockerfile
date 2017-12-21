@@ -2,7 +2,7 @@ FROM ruby:2.4.3-alpine3.7
 MAINTAINER Doni Leong <doni.leong@gmail.com>
 
 # Set up dependencies
-ENV BUILD_PACKAGES="build-base git bash curl" \
+ENV BUILD_PACKAGES="build-base git bash curl postgresql-client" \
 		DEV_PACKAGES="bzip2-dev libgcrypt-dev libxml2-dev libxslt-dev postgresql-dev yaml-dev sqlite-dev zlib-dev libc-dev libffi-dev" \
 		RAILS_DEPS="ca-certificates nodejs tzdata yarn" \
 		APP="/srv/www"
