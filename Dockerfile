@@ -1,7 +1,7 @@
-FROM ruby:2.4.2
+FROM ruby:2.4.3
 
-ENV BUILD_PACKAGES="bash curl tzdata ca-certificates wget less ssh" \
-    DEV_PACKAGES="ruby-dev libc-dev libffi-dev libmysqlclient-dev libxml2-dev libxslt-dev libgmp3-dev" \
+ENV BUILD_PACKAGES="bash curl tzdata ca-certificates wget" \
+    DEV_PACKAGES="ruby-dev libc-dev libffi-dev libxml2-dev libxslt-dev libgmp3-dev" \
     RUBY_PACKAGES="postgresql-client git openssl" \
     GEM_HOME=/app/bundle \
     BUNDLE_PATH=/app/bundle \
@@ -11,10 +11,9 @@ ENV BUILD_PACKAGES="bash curl tzdata ca-certificates wget less ssh" \
 
 RUN set -ex \
     && apt-get update \
-    && apt-get install -qq -y --force-yes build-essential --fix-missing --no-install-recommends \
-    $BUILD_PACKAGES \
-    $DEV_PACKAGES \
-    $RUBY_PACKAGES \
+    && apt-get install -qq -y --force-yes build-essential --fix-missing --no-install-recommends $BUILD_PACKAGES $DEV_PACKAGES $RUBY_PACKAGES \
+    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
     && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get -y install python build-essential nodejs \
     && npm install -g yarn@0.25.2 \
@@ -23,14 +22,14 @@ RUN set -ex \
     echo 'install: --no-document'; \
     echo 'update: --no-document'; \
     } >> ~/.gemrc \
+    && gem install bundler \
     && apt-get clean \
     && rm -rf '/var/lib/apt/lists/*' '/tmp/*' '/var/tmp/*' \
     && mkdir ~/.ssh \
-    && chmod 700 ~/.ssh
-
-RUN gem install bundler
-RUN gem install rails -v '~> 5.1.4'
-# RUN gem install backup -v '~> 5.0.0'
+    && chmod 700 ~/.ssh \
+    && gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ \
+    && npm config set registry https://registry.npm.taobao.org \
+    && yarn config set registry https://registry.npm.taobao.org
 
 WORKDIR $APP
 
