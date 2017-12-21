@@ -1,4 +1,4 @@
-FROM ruby:2.4.3-alpine3.7
+FROM ruby:2.4.3-alpine3.6
 MAINTAINER Doni Leong <doni.leong@gmail.com>
 
 # Set up dependencies
