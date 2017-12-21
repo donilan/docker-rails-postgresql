@@ -4,7 +4,7 @@ MAINTAINER Doni Leong <doni.leong@gmail.com>
 # Set up dependencies
 ENV BUILD_PACKAGES="build-base git bash curl postgresql-client" \
 		DEV_PACKAGES="bzip2-dev libgcrypt-dev libxml2-dev libxslt-dev postgresql-dev yaml-dev sqlite-dev zlib-dev libc-dev libffi-dev" \
-		RAILS_DEPS="ca-certificates nodejs nodejs-npm tzdata yarn" \
+		RAILS_DEPS="ca-certificates nodejs nodejs-npm tzdata" \
 		APP="/srv/www"
 
 RUN \
@@ -12,6 +12,7 @@ RUN \
 	apk add --no-cache --update --upgrade --virtual .railsdeps $BUILD_PACKAGES $DEV_PACKAGES $RAILS_DEPS \
   && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   && echo "Asia/Shanghai" > /etc/timezone \
+  && npm install -g yarn \
   && mkdir -p "$APP" \
   && { \
     echo 'install: --no-document'; \
