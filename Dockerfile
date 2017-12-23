@@ -1,36 +1,31 @@
-FROM ruby:2.4.2
+FROM ruby:2.4.3-alpine3.7
+MAINTAINER Doni Leong <doni.leong@gmail.com>
 
-ENV BUILD_PACKAGES="bash curl tzdata ca-certificates wget less ssh" \
-    DEV_PACKAGES="ruby-dev libc-dev libffi-dev libmysqlclient-dev libxml2-dev libxslt-dev libgmp3-dev" \
-    RUBY_PACKAGES="postgresql-client git openssl" \
-    GEM_HOME=/app/bundle \
-    BUNDLE_PATH=/app/bundle \
-    BUNDLE_APP_CONFIG=/app/bundle \
-    APP=/app/webapp \
-    PATH=/app/webapp/bin:/app/bundle/bin:$PATH
+# Set up dependencies
+ENV BUILD_PACKAGES="build-base git bash curl" \
+		DEV_PACKAGES="bzip2-dev libgcrypt-dev libxml2-dev libxslt-dev postgresql-dev yaml-dev sqlite-dev zlib-dev libc-dev libffi-dev" \
+		RAILS_DEPS="ca-certificates nodejs tzdata yarn" \
+		APP="/app/webapp"
 
-RUN set -ex \
-    && apt-get update \
-    && apt-get install -qq -y --force-yes build-essential --fix-missing --no-install-recommends \
-    $BUILD_PACKAGES \
-    $DEV_PACKAGES \
-    $RUBY_PACKAGES \
-    && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-    && apt-get -y install python build-essential nodejs \
-    && npm install -g yarn@0.25.2 \
-    && mkdir -p "$APP" "$GEM_HOME/bin" \
-    && { \
+RUN \
+  # sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories && \
+	apk add --no-cache --update --upgrade --virtual .railsdeps $BUILD_PACKAGES $DEV_PACKAGES $RAILS_DEPS \
+  && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+  && echo "Asia/Shanghai" > /etc/timezone \
+  && mkdir -p "$APP" \
+  && { \
     echo 'install: --no-document'; \
     echo 'update: --no-document'; \
-    } >> ~/.gemrc \
-    && apt-get clean \
-    && rm -rf '/var/lib/apt/lists/*' '/tmp/*' '/var/tmp/*' \
-    && mkdir ~/.ssh \
-    && chmod 700 ~/.ssh
-
-RUN gem install bundler
-RUN gem install rails -v '~> 5.1.4'
-# RUN gem install backup -v '~> 5.0.0'
+    } >> $HOME/.gemrc \
+	&& gem install bundler \
+	&& rm -rf /var/cache/apk/* \
+  && mkdir ~/.ssh \
+  && chmod 700 ~/.ssh \
+	&& mkdir -p $APP \
+  && gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ \
+  && npm config set registry https://registry.npm.taobao.org \
+  && yarn config set registry https://registry.npm.taobao.org \
+  && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories
 
 WORKDIR $APP
 
