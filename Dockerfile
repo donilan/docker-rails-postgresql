@@ -22,7 +22,7 @@ RUN \
   && mkdir ~/.ssh \
   && chmod 700 ~/.ssh \
 	&& mkdir -p $APP \
-  && gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ \
+  && gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ \
   && npm config set registry https://registry.npm.taobao.org \
   && yarn config set registry https://registry.npm.taobao.org \
   && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/' /etc/apk/repositories
